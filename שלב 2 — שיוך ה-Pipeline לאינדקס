@@ -1,0 +1,37 @@
+שלב 2 — שיוך ה-Pipeline לאינדקס
+אם האינדקס כבר קיים — הוסף כ-default pipeline:
+jsonPUT /YOUR_INDEX_NAME/_settings
+{
+  "index.default_pipeline": "user_category_pipeline"
+}
+
+
+
+
+אם משתמשים ב-Index Template (מומלץ לסביבת logs):
+jsonPUT _index_template/your_logs_template
+{
+  "index_patterns": ["your-logs-*"],
+  "template": {
+    "settings": {
+      "index.default_pipeline": "user_category_pipeline"
+    }
+  }
+}
+
+
+
+שלב 3 — Reindex לדוקומנטים ישנים (אם צריך)
+jsonPOST _reindex
+{
+  "source": { "index": "your-index-name" },
+  "dest": {
+    "index": "your-index-name-v2",
+    "pipeline": "user_category_pipeline"
+  }
+}
+
+
+
+
+
