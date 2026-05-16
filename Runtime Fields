@@ -1,0 +1,62 @@
+Runtime Field 1: user_metadata (החלק לפני השם)
+
+
+
+// שם השדה: user_metadata
+// סוג: keyword
+
+String unfilteredName = doc['user.unfilteredName.keyword'].value;
+int separatorIdx = unfilteredName.indexOf(' - ');
+if (separatorIdx > -1) {
+  emit(unfilteredName.substring(0, separatorIdx));
+} else {
+  emit(unfilteredName);
+}
+
+
+
+
+
+
+Runtime Field 2: user_city_category (החלוקה עצמה)
+
+
+
+
+
+// שם השדה: user_city_category
+// סוג: keyword
+
+if (!doc.containsKey('user.unfilteredName.keyword') || 
+    doc['user.unfilteredName.keyword'].empty) {
+  emit('unknown');
+  return;
+}
+
+String raw = doc['user.unfilteredName.keyword'].value;
+String email = '';
+
+if (doc.containsKey('user.email.keyword') && 
+    !doc['user.email.keyword'].empty) {
+  email = doc['user.email.keyword'].value;
+}
+
+// חילוץ החלק לפני " - "
+String meta = raw;
+int sep = raw.indexOf(' - ');
+if (sep > -1) {
+  meta = raw.substring(0, sep);
+}
+
+// בדיקת החלוקות לפי סדר עדיפויות
+if (meta.contains('ירושלים') && !meta.contains('שלוש')) {
+  emit('עיר_בירה');
+} else if (meta.contains('טבריה') && !meta.contains('הזית 4')) {
+  emit('עיר_תיירות');
+} else if (email.contains('tlv')) {
+  emit('עיר_כיף');
+} else if (email.contains('rml') || meta.contains('רמלה')) {
+  emit('עיר_עולם');
+} else {
+  emit('אחר');
+}
