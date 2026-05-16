@@ -1,0 +1,36 @@
+PUT _ingest/pipeline/city-category-pipeline
+{
+  "description": "Categorize users by city — only for my project",
+  "processors": [
+    {
+      "script": {
+        "description": "Extract prefix and assign city_category",
+        "if": "ctx?.projectId == 'MY_PROJECT_ID'",
+        "lang": "painless",
+        "source": """
+          def unfilteredName = ctx?.user?.unfilteredName ?: "";
+          def email = ctx?.user?.email ?: "";
+
+          def prefix = "";
+          if (unfilteredName.contains(" - ")) {
+            prefix = unfilteredName.substring(0, unfilteredName.indexOf(" - "));
+          } else {
+            prefix = unfilteredName;
+          }
+
+          if (prefix.contains("ירושלים") && !prefix.contains("שלוש")) {
+            ctx['city_category'] = "עיר_בירה";
+          } else if (prefix.contains("טבריה") && !prefix.contains("הזית 4")) {
+            ctx['city_category'] = "עיר_תיירות";
+          } else if (email.contains("tlv")) {
+            ctx['city_category'] = "עיר_כיף";
+          } else if (email.contains("rml") || prefix.contains("רמלה")) {
+            ctx['city_category'] = "עיר_עולם";
+          } else {
+            ctx['city_category'] = "אחר";
+          }
+        """
+      }
+    }
+  ]
+}
