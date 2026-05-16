@@ -1,0 +1,32 @@
+// שם הפילד: user_category
+// סוג: keyword
+
+def parts = doc['user.unfilteredName.keyword'].value.splitOnToken(' - ');
+def prefix = parts.length > 1 ? parts[0] : doc['user.unfilteredName.keyword'].value;
+def email = doc['user.email.keyword'].value;
+
+// עיר_כיף - לפי email
+if (email.contains('tlv')) {
+  emit('עיר_כיף');
+  return;
+}
+
+// עיר_עולם - לפי email או prefix
+if (email.contains('rml') || prefix.contains('רמלה')) {
+  emit('עיר_עולם');
+  return;
+}
+
+// עיר_בירה - ירושלים ללא שלוש ב-prefix
+if (prefix.contains('ירושלים') && !prefix.contains('שלוש')) {
+  emit('עיר_בירה');
+  return;
+}
+
+// עיר_תיירות - טבריה ללא "הזית 4" ב-prefix
+if (prefix.contains('טבריה') && !prefix.contains('הזית 4')) {
+  emit('עיר_תיירות');
+  return;
+}
+
+emit('אחר');
