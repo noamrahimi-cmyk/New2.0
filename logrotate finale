@@ -1,0 +1,23 @@
+הפתרון הנכון למקרה שלך
+שלב 1 — בדוק אם mediamtx תומך ב-HUP:
+bashdocker kill --signal=HUP mediamtx && tail -f /opt/mediamtx/logs/mediamtx.log
+אם נוצר קובץ חדש — תומך ✅
+אם תומך — הקובץ הסופי:
+/opt/mediamtx/logs/mediamtx.log {
+    size 50M
+    rotate 1
+    missingok
+    notifempty
+    postrotate
+        docker kill --signal=HUP mediamtx
+    endscript
+}
+אם לא תומך — נשאר עם copytruncate:
+/opt/mediamtx/logs/mediamtx.log {
+    size 50M
+    rotate 1
+    missingok
+    notifempty
+    copytruncate
+}
+
