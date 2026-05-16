@@ -1,0 +1,8 @@
+רק בדיקה אחת לפני שסוגרים את הנושא
+bashsudo logrotate -d /etc/logrotate.d/mediamtx
+-d זה dry run — לא משנה כלום, רק מראה מה הוא היה עושה. תוודא שאין שגיאות.
+ואז הרצה ידנית אחת לבדיקה אמיתית:
+bashsudo logrotate -f /etc/logrotate.d/mediamtx
+ותבדוק:
+bashls -la /opt/mediamtx/logs/
+אם רואה mediamtx.log ו-mediamtx.log.1 — עובד מושלם ✅
