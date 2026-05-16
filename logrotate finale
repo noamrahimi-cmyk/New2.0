@@ -1,3 +1,11 @@
+שלב 4 — Log Rotation (חובה בפרודקשן)
+כדי שהקובץ לא יתפח לנצח:
+sudo nano /etc/logrotate.d/mediamtx
+
+
+
+
+
 הפתרון הנכון למקרה שלך
 שלב 1 — בדוק אם mediamtx תומך ב-HUP:
 bashdocker kill --signal=HUP mediamtx && tail -f /opt/mediamtx/logs/mediamtx.log
