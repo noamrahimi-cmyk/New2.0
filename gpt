@@ -1,0 +1,66 @@
+String unfiltered = '';
+String email = '';
+
+if (!doc['user.unfilteredName.keyword'].empty) {
+    unfiltered = doc['user.unfilteredName.keyword'].value;
+}
+
+if (!doc['user.email.keyword'].empty) {
+    email = doc['user.email.keyword'].value.toLowerCase();
+}
+
+/*
+   רק החלק שלפני " - "
+*/
+String prefix = unfiltered;
+
+int idx = unfiltered.indexOf(' - ');
+
+if (idx > -1) {
+    prefix = unfiltered.substring(0, idx);
+}
+
+/*
+   עיר_בירה
+*/
+if (
+    prefix.contains('ירושלים') &&
+    !prefix.contains('שלוש')
+) {
+    emit('עיר_בירה');
+    return;
+}
+
+/*
+   עיר_תיירות
+*/
+if (
+    prefix.contains('טבריה') &&
+    !prefix.contains('הזית 4')
+) {
+    emit('עיר_תיירות');
+    return;
+}
+
+/*
+   עיר_כיף
+*/
+if (
+    email.contains('tlv')
+) {
+    emit('עיר_כיף');
+    return;
+}
+
+/*
+   עיר_עולם
+*/
+if (
+    email.contains('rml') ||
+    prefix.contains('רמלה')
+) {
+    emit('עיר_עולם');
+    return;
+}
+
+emit('אחר');
