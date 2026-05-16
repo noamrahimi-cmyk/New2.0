@@ -1,0 +1,9 @@
+PUT _index_template/my-project-template
+{
+  "index_patterns": ["my-project-logs-*"],
+  "template": {
+    "settings": {
+      "default_pipeline": "city-category-pipeline"
+    }
+  }
+}
