@@ -1,0 +1,31 @@
+// Ingest Pipeline - processors
+[
+  {
+    "script": {
+      "lang": "painless",
+      "source": """
+        def name = ctx?.user?.unfilteredName ?: '';
+        def email = ctx?.user?.email ?: '';
+        
+        // חיתוך החלק לפני " - "
+        def prefix = name.contains(' - ') 
+          ? name.substring(0, name.lastIndexOf(' - ')) 
+          : name;
+
+        def category = 'אחר';
+
+        if (email.contains('tlv')) {
+          category = 'עיר_כיף';
+        } else if (email.contains('rml') || prefix.contains('רמלה')) {
+          category = 'עיר_עולם';
+        } else if (prefix.contains('ירושלים') && !prefix.contains('שלוש')) {
+          category = 'עיר_בירה';
+        } else if (prefix.contains('טבריה') && !prefix.contains('הזית 4')) {
+          category = 'עיר_תיירות';
+        }
+
+        ctx.user_category = category;
+      """
+    }
+  }
+]
