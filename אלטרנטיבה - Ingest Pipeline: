@@ -1,0 +1,30 @@
+// ב-Dev Tools (Console):
+PUT _ingest/pipeline/user-city-classifier
+{
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": """
+          String raw = ctx.user.unfilteredName;
+          String email = ctx.user?.email ?: '';
+          String meta = raw;
+          int sep = raw.indexOf(' - ');
+          if (sep > -1) meta = raw.substring(0, sep);
+          
+          if (meta.contains('ירושלים') && !meta.contains('שלוש')) {
+            ctx.user_city_category = 'עיר_בירה';
+          } else if (meta.contains('טבריה') && !meta.contains('הזית 4')) {
+            ctx.user_city_category = 'עיר_תיירות';
+          } else if (email.contains('tlv')) {
+            ctx.user_city_category = 'עיר_כיף';
+          } else if (email.contains('rml') || meta.contains('רמלה')) {
+            ctx.user_city_category = 'עיר_עולם';
+          } else {
+            ctx.user_city_category = 'אחר';
+          }
+        """
+      }
+    }
+  ]
+}
