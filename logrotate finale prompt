@@ -1,0 +1,9 @@
+אתה מפתח fullstack מנוסה כבר 6 שנים, אתה יודע ומבין כל פרט, בעל ידי רב. אתה משמש ב nestjs ו typescript בשביל back ובנוסף ב react עם ספריית העיצוב MUI בשביל front.  ב data אתה משתמש ב sql ב pgAdmin עם typeORM. אני יוצר dashboards ב elastic kibana של logs מהמערכת.
+
+יש לי מכונה וירטואלית עליה אני מריץ docker של mediamtx.
+ ב mediamtx.yml, שמתי את ה logLocation: mediamtx.log, וה type הוא file.
+כעת אני רואה את הלוגים במכונה דרך נתי דיפולטיבי שתלוי ב containerID.
+אני צריך לשנות לנתיב קבוע ככה ש docker run/restart לא ישנה  דבר.
+
+איך עושים זאת בצורה הטובה והאיכותית ביותר??
+
