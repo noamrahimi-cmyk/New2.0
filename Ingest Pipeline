@@ -1,0 +1,45 @@
+PUT _ingest/pipeline/user_category_pipeline
+{
+  "description": "Categorize users based on unfilteredName and email",
+  "processors": [
+    {
+      "script": {
+        "lang": "painless",
+        "source": """
+          // שלב 1: חילוץ החלק שלפני השם (לפני " - ")
+          String unfilteredName = '';
+          String email = '';
+
+          if (ctx?.user?.unfilteredName != null) {
+            String full = ctx.user.unfilteredName;
+            int dashIdx = full.indexOf(' - ');
+            if (dashIdx >= 0) {
+              unfilteredName = full.substring(0, dashIdx);
+            } else {
+              unfilteredName = full;
+            }
+          }
+
+          if (ctx?.user?.email != null) {
+            email = ctx.user.email;
+          }
+
+          // שלב 2: סיווג לפי הכללים
+          String category = 'אחר';
+
+          if (unfilteredName.contains('ירושלים') && !unfilteredName.contains('שלוש')) {
+            category = 'עיר_בירה';
+          } else if (unfilteredName.contains('טבריה') && !unfilteredName.contains('הזית 4')) {
+            category = 'עיר_תיירות';
+          } else if (email.contains('tlv')) {
+            category = 'עיר_כיף';
+          } else if (email.contains('rml') || unfilteredName.contains('רמלה')) {
+            category = 'עיר_עולם';
+          }
+
+          ctx['user_category'] = category;
+        """
+      }
+    }
+  ]
+}
